@@ -31,7 +31,7 @@ namespace ConsoleSnake
 
         private static double hue = 0;
         private static readonly List<TrailElement> _trail = new List<TrailElement>();
-
+        
         public static void Main(string[] args)
         {
             ConsoleUtils.TryEnableAnsi();
@@ -40,7 +40,6 @@ namespace ConsoleSnake
                 Screen.SetSize(75, 20);
                 Console.WriteLine("Set up console window and press any key...");
                 Console.ReadKey();
-                Console.Clear();
                 Screen.ShrinkToWindowSize();
             }
             else
@@ -48,6 +47,9 @@ namespace ConsoleSnake
                 Screen.UpdateSize();
             }
             Console.CursorVisible = false;
+            Console.Clear();
+            Console.Out.Write(ConsoleUtils.HsvToEscBg(0, 0, 0) + new string(' ', Screen.Width * (Screen.Height + 1)));
+            Console.SetCursorPosition(0, 0);
 
             lock (_inputLock)
             {
@@ -127,7 +129,7 @@ namespace ConsoleSnake
                 }
                 else
                 {
-                    Screen.WriteAt(elem.Pos, ' ');
+                    Screen.WriteAt(elem.Pos, ConsoleUtils.HsvToEscBg(0, 0, 0) + ' ');
                     _trail.RemoveAt(i);
                 }
             }
@@ -181,16 +183,20 @@ namespace ConsoleSnake
                     switch (key)
                     {
                         case ConsoleKey.W:
+                        case ConsoleKey.UpArrow:
                             SetDirection(Direction.North);
                             break;
-                        case ConsoleKey.D:
-                            SetDirection(Direction.East);
+                        case ConsoleKey.A:
+                        case ConsoleKey.LeftArrow:
+                            SetDirection(Direction.West);
                             break;
                         case ConsoleKey.S:
+                        case ConsoleKey.DownArrow:
                             SetDirection(Direction.South);
                             break;
-                        case ConsoleKey.A:
-                            SetDirection(Direction.West);
+                        case ConsoleKey.D:
+                        case ConsoleKey.RightArrow:
+                            SetDirection(Direction.East);
                             break;
                     }
                 }
